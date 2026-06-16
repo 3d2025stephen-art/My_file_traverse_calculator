@@ -1,0 +1,2 @@
+# Runtime clipboard support (optional — falls back to subprocess on Windows/macOS/Linux)
+pyperclip>=1.8
