@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Transfer Time Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .calculator-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 2px;
+            margin-right: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .time-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .time-input-group input {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .time-input-label {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #667eea;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .result-breakdown {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #1565c0;
+            margin-top: 15px;
+        }
+
+        .info-box strong {
+            color: #1565c0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: #e0e0e0;
+            color: #666;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .version-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="version-tag">v2.0</div>
+    <div class="container">
+        <h1>⏱️ File Transfer Time Calculator</h1>
+        <p class="subtitle">Calculate time estimates for file copying, conversion, or transfers</p>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('estimate')">Estimate Time</button>
+            <button class="tab-btn" onclick="switchTab('reverse')">Calculate Size</button>
+        </div>
+
+        <!-- Tab 1: Estimate Time -->
+        <div id="estimate" class="tab-content active">
+            <div class="calculator-section">
+                <div class="section-title">Reference Data (Known Benchmark)</div>
+                
+                <div class="form-group">
+                    <label for="refSize">Reference File Size (GB)</label>
+                    <input type="number" id="refSize" placeholder="e.g., 5" step="0.1" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Time Taken for Reference</label>
+                    <div class="time-input-group">
+                        <div>
+                            <input type="number" id="refMinutes" placeholder="0" min="0" max="59">
+                            <div class="time-input-label">Min</div>
+                        </div>
+                        <div>
+                            <input type="number" id="refSeconds" placeholder="0" min="0" max="59" step="0.01">
+                            <div class="time-input-label">Sec</div>
+                        </div>
+                        <div>
+                            <input type="number" id="refMillis" placeholder="0" min="0" max="999">
+                            <div class="time-input-label">MS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculator-section">
+                <div class="section-title">Target File Size</div>
+                
+                <div class="form-group">
+                    <label for="targetSize">New File Size (GB)</label>
+                    <input type="number" id="targetSize" placeholder="e.g., 50" step="0.1" min="0">
+                </div>
+
+                <button onclick="calculateTime()">Calculate Estimated Time</button>
+            </div>
+
+            <div id="results" class="results hidden">
+                <div class="result-item">
+                    <div class="result-label">Estimated Time</div>
+                    <div class="result-value" id="resultTime">--</div>
+                    <div class="result-breakdown" id="resultBreakdown"></div>
+                </div>
+                <div class="info-box">
+                    <strong>ℹ️ Formula:</strong> This calculates proportional time based on file size ratio: (Target Size ÷ Reference Size) × Reference Time
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Reverse Calculate -->
+        <div id="reverse" class="tab-content">
+            <div class="calculator-section">
+                <div class="section-title">Reference Data (Known Benchmark)</div>
+                
+                <div class="form-group">
+                    <label for="revRefSize">Reference File Size (GB)</label>
+                    <input type="number" id="revRefSize" placeholder="e.g., 5" step="0.1" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Time Taken for Reference</label>
+                    <div class="time-input-group">
+                        <div>
+                            <input type="number" id="revRefMinutes" placeholder="0" min="0" max="59">
+                            <div class="time-input-label">Min</div>
+                        </div>
+                        <div>
+                            <input type="number" id="revRefSeconds" placeholder="0" min="0" max="59" step="0.01">
+                            <div class="time-input-label">Sec</div>
+                        </div>
+                        <div>
+                            <input type="number" id="revRefMillis" placeholder="0" min="0" max="999">
+                            <div class="time-input-label">MS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculator-section">
+                <div class="section-title">Target Time Available</div>
+                
+                <div class="form-group">
+                    <label>How long do you want to wait?</label>
+                    <div class="time-input-group">
+                        <div>
+                            <input type="number" id="targetMinutes" placeholder="0" min="0">
+                            <div class="time-input-label">Min</div>
+                        </div>
+                        <div>
+                            <input type="number" id="targetSeconds" placeholder="0" min="0" max="59" step="0.01">
+                            <div class="time-input-label">Sec</div>
+                        </div>
+                        <div>
+                            <input type="number" id="targetMillis" placeholder="0" min="0" max="999">
+                            <div class="time-input-label">MS</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="calculateSize()">Calculate Maximum File Size</button>
+            </div>
+
+            <div id="reverseResults" class="results hidden">
+                <div class="result-item">
+                    <div class="result-label">Maximum File Size You Can Process</div>
+                    <div class="result-value" id="resultSize">-- GB</div>
+                </div>
+                <div class="info-box">
+                    <strong>ℹ️ Formula:</strong> This calculates the file size you can process in your time limit: (Available Time ÷ Reference Time) × Reference Size
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Hide all tabs
+            document.getElementById('estimate').classList.remove('active');
+            document.getElementById('reverse').classList.remove('active');
+            
+            // Show selected tab
+            document.getElementById(tab).classList.add('active');
+            
+            // Update button states
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function timeToSeconds(minutes, seconds, millis) {
+            return (parseInt(minutes) || 0) * 60 + (parseFloat(seconds) || 0) + ((parseInt(millis) || 0) / 1000);
+        }
+
+        function secondsToTime(totalSeconds) {
+            // Extract components
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = totalSeconds - (totalMinutes * 60);
+            
+            const minutes = totalMinutes;
+            const seconds = Math.floor(remainingSeconds);
+            const millis = Math.round((remainingSeconds - seconds) * 1000);
+            
+            // Format display
+            if (minutes > 0) {
+                return `${minutes}m ${seconds}s${millis > 0 ? ' ' + millis + 'ms' : ''}`;
+            } else if (seconds > 0) {
+                return `${seconds}s${millis > 0 ? ' ' + millis + 'ms' : ''}`;
+            } else {
+                return `${millis}ms`;
+            }
+        }
+
+        function secondsToBreakdown(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = totalSeconds - (minutes * 60);
+            const seconds = Math.floor(remainingSeconds);
+            const millis = Math.round((remainingSeconds - seconds) * 1000);
+            
+            return `${minutes}m ${seconds}s ${millis}ms (${totalSeconds.toFixed(3)}s total)`;
+        }
+
+        function calculateTime() {
+            const refSize = parseFloat(document.getElementById('refSize').value);
+            const refTime = timeToSeconds(
+                document.getElementById('refMinutes').value,
+                document.getElementById('refSeconds').value,
+                document.getElementById('refMillis').value
+            );
+            const targetSize = parseFloat(document.getElementById('targetSize').value);
+
+            if (!refSize || !refTime || !targetSize) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Calculate proportional time
+            const estimatedSeconds = (targetSize / refSize) * refTime;
+            const formattedTime = secondsToTime(estimatedSeconds);
+            const breakdown = secondsToBreakdown(estimatedSeconds);
+
+            document.getElementById('resultTime').textContent = formattedTime;
+            document.getElementById('resultBreakdown').textContent = breakdown;
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function calculateSize() {
+            const refSize = parseFloat(document.getElementById('revRefSize').value);
+            const refTime = timeToSeconds(
+                document.getElementById('revRefMinutes').value,
+                document.getElementById('revRefSeconds').value,
+                document.getElementById('revRefMillis').value
+            );
+            const targetTime = timeToSeconds(
+                document.getElementById('targetMinutes').value,
+                document.getElementById('targetSeconds').value,
+                document.getElementById('targetMillis').value
+            );
+
+            if (!refSize || !refTime || !targetTime) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Calculate proportional size
+            const maxSize = (targetTime / refTime) * refSize;
+
+            document.getElementById('resultSize').textContent = maxSize.toFixed(2) + ' GB';
+            document.getElementById('reverseResults').classList.remove('hidden');
+        }
+
+        // Allow Enter key to calculate
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab.id === 'estimate') {
+                    calculateTime();
+                } else {
+                    calculateSize();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
